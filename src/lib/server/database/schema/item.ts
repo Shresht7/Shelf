@@ -11,7 +11,7 @@ export const item = sqliteTable('item', {
     id: integer('id').primaryKey({ autoIncrement: true }),
 
     // URL of the item
-    url: text('url').unique().notNull(),
+    url: text('url').notNull(),
 
     // Display title of the item
     title: text('title').notNull(),
