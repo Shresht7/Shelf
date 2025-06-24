@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) { throw new Error('DATABASE_URL is not set') }
 // Configure drizzle
 export default defineConfig({
 	dialect: 'sqlite',
-	schema: './src/lib/server/db/schema',
+	schema: './src/lib/server/database/schema',
 	out: "./src/lib/server/db/migrations",
 	dbCredentials: { url: process.env.DATABASE_URL },
 	verbose: true,
