@@ -2,9 +2,22 @@
     let items = $state<string[]>([]);
     let url = $state("");
 
-    function saveUrl(e: SubmitEvent) {
+    async function saveUrl(e: SubmitEvent) {
         e.preventDefault();
-        items.push(url);
+        const response = await fetch("/api/save", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                url,
+                title: "Example title",
+                type: "article",
+                content: "Optional Content",
+                tags: "example, test",
+            }),
+        });
+        console.log(await response.json());
     }
 </script>
 
