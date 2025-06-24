@@ -1,12 +1,15 @@
-import { defineConfig } from 'drizzle-kit';
+// Library
+import { defineConfig } from 'drizzle-kit'
 
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+// Check if the DATABASE_URL environment variable is set
+if (!process.env.DATABASE_URL) { throw new Error('DATABASE_URL is not set') }
 
+// Configure drizzle
 export default defineConfig({
-	schema: './src/lib/server/db/schema/index.ts',
-	out: "./src/lib/server/db/migrations",
 	dialect: 'sqlite',
+	schema: './src/lib/server/db/schema',
+	out: "./src/lib/server/db/migrations",
 	dbCredentials: { url: process.env.DATABASE_URL },
 	verbose: true,
 	strict: true
-});
+})
