@@ -11,8 +11,7 @@ import { eq } from 'drizzle-orm'
 export async function saveItem(i: typeof item.$inferInsert) {
     return db.insert(item)
         .values(i)
-        .returning({ id: item.id })
-        .run()
+        .returning()
 }
 
 /**
