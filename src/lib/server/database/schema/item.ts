@@ -1,6 +1,9 @@
 // Library
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
+// Type Definitions
+import { validItemTypes } from '$lib/server/types'
+
 // -----------
 // ITEM SCHEMA
 // -----------
@@ -20,7 +23,7 @@ export const item = sqliteTable('item', {
     content: text('content'),
 
     // The type of item
-    type: text('type', { enum: ['article', 'video', 'audio', 'image', 'pdf', 'bookmark', 'generic'] }),
+    type: text('type', { enum: validItemTypes }),
 
     // Comma-separated tags/labels
     tags: text('tags'),
