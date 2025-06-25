@@ -1,6 +1,27 @@
 <script lang="ts">
-    let items = $state<string[]>([]);
+    let items = $state<any[]>([]);
     let url = $state("");
+
+    async function getItems() {
+        const response = await fetch("/api/items", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            return;
+        }
+
+        items = await response.json();
+    }
+
+    $inspect(items);
+
+    $effect(() => {
+        getItems();
+    });
 
     async function saveUrl(e: SubmitEvent) {
         e.preventDefault();
@@ -33,6 +54,6 @@
 
 <main>
     {#each items as item}
-        <p>{item}</p>
+        <p>{item.url}</p>
     {/each}
 </main>
