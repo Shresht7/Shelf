@@ -2,7 +2,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 // Type Definitions
-import { validItemTypes } from '$lib/server/types'
+import { validItemTypes } from '../../types'
 
 // -----------
 // ITEM SCHEMA
