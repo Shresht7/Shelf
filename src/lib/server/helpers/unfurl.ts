@@ -6,9 +6,30 @@ import { isProbablyReaderable, Readability } from '@mozilla/readability'
 import type { ItemType } from '../../server/database/schema/saves'
 
 type URLMetadata = {
+    /** Title of the article */
     title: string,
-    content?: string,
+    /** The type of the article */
     type: ItemType,
+    /** HTML string of the processed article content */
+    content?: string,
+    /** Text Content of the article, with all the HTML tags removed */
+    textContent?: string,
+    /** Length of an article, in characters */
+    length?: number,
+    /** Article description, or short excerpt from the content */
+    excerpt?: string,
+    /** Author metadata */
+    byline?: string,
+    /** Content direction */
+    dir?: string,
+    /** Name of the site */
+    siteName?: string,
+    /** Content language */
+    lang?: string,
+    /** Published time */
+    publishedTime?: string,
+    /** Thumbnail image */
+    image?: string,
 }
 
 export async function unfurl(url: string): Promise<URLMetadata> {
