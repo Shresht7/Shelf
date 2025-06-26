@@ -1,5 +1,6 @@
 import { error } from "@sveltejs/kit";
 import type { PageLoad } from "./$types";
+import type { saves } from "$lib/server/database/schema/saves";
 
 export const load: PageLoad = async ({ fetch }) => {
     const response = await fetch('/api/saves')
@@ -7,9 +8,9 @@ export const load: PageLoad = async ({ fetch }) => {
         return error(500, 'Failed to fetch resource')
     }
 
-    const saves = await response.json() as { url: string }[]
+    const data = await response.json() as typeof saves.$inferSelect[]
 
     return {
-        saves
+        saves: data
     }
 }

@@ -1,10 +1,13 @@
 <script lang="ts">
+    import type { saves } from "$lib/server/database/schema/saves";
     import type { PageProps } from "./$types";
 
     let { data }: PageProps = $props();
 
-    let items = $state<any[]>(data.saves);
+    let items = $state<(typeof saves.$inferSelect)[]>(data.saves);
     let url = $state("");
+
+    let disabled = $derived(!URL.canParse(url));
 
     $inspect(items);
 
@@ -17,7 +20,8 @@
             },
             body: JSON.stringify({ url }),
         });
-        console.log(await response.json());
+        const data = (await response.json()) as typeof saves.$inferSelect;
+        items.push(data);
     }
 </script>
 
@@ -28,7 +32,7 @@
         placeholder="Save a URL. https://..."
         bind:value={url}
     />
-    <button type="submit">Save</button>
+    <button type="submit" {disabled}>Save</button>
 </form>
 
 <main>
@@ -36,3 +40,9 @@
         <p>{item.url}</p>
     {/each}
 </main>
+
+<style>
+    main {
+        margin-top: 1rem;
+    }
+</style>
