@@ -1,37 +1,30 @@
 // Library
 import { saveItem } from '$lib/server/database/saves'
-import { json, type RequestHandler } from '@sveltejs/kit'
+import { json, error, type RequestHandler } from '@sveltejs/kit'
 
 // Helpers
 import { unfurl } from '$lib/server/helpers/unfurl'
+import { z } from 'zod'
 
 // Type Definitions
 import type { saves } from '$lib/server/database/schema/saves'
-import { validItemTypes } from '$lib/server/database/schema/saves'
 
 export const POST: RequestHandler = async ({ request }) => {
-    const { url, title, type, content, tags } = await request.json() as typeof saves.$inferInsert
+    const { url, tags } = await request.json() as typeof saves.$inferInsert
 
-    if (!url || !title || !type) {
-        return new Response('Missing required fields', { status: 400 })
-    }
-
-    if (!validItemTypes.includes(type)) {
-        return new Response('Invalid item type', { status: 400 })
+    const { success, error: e } = z.string().url('Malformed URL').safeParse(url)
+    if (!success) {
+        throw new Response(e.message, { status: 400 })
     }
 
     try {
         const metadata = await unfurl(url)
-
         const result = await saveItem({
             url,
-            title: title ?? metadata.title,
-            type: metadata.type,
-            content: metadata.content,
+            ...metadata,
             tags,
             createdAt: new Date()
         })
-
         return json(result)
     } catch (e) {
         return new Response('Failed to save item', { status: 500 })
