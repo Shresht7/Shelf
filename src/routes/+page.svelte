@@ -1,27 +1,12 @@
 <script lang="ts">
-    let items = $state<any[]>([]);
+    import type { PageProps } from "./$types";
+
+    let { data }: PageProps = $props();
+
+    let items = $state<any[]>(data.saves);
     let url = $state("");
 
-    async function getItems() {
-        const response = await fetch("/api/items", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!response.ok) {
-            return;
-        }
-
-        items = await response.json();
-    }
-
     $inspect(items);
-
-    $effect(() => {
-        getItems();
-    });
 
     async function saveUrl(e: SubmitEvent) {
         e.preventDefault();
@@ -30,13 +15,7 @@
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                url,
-                title: "Example title",
-                type: "article",
-                content: "Optional Content",
-                tags: "example, test",
-            }),
+            body: JSON.stringify({ url }),
         });
         console.log(await response.json());
     }
