@@ -27,11 +27,35 @@ export const saves = sqliteTable('saves', {
     // Display title of the item
     title: text('title').notNull(),
 
+    // The type of item
+    type: text('type', { enum: validItemTypes }),
+
     // Full HTML/Text content
     content: text('content'),
 
-    // The type of item
-    type: text('type', { enum: validItemTypes }),
+    // Text content of the article, with all the HTML tags removed
+    textContent: text('textContent'),
+
+    // Length of the article, in characters
+    length: integer('length'),
+
+    // Article description, or short excerpt from the content
+    excerpt: text('excerpt'),
+
+    // Author metadata
+    byline: text('byline'),
+
+    // Content direction
+    dir: text('dir'),
+
+    // Name of the site
+    siteName: text('siteName'),
+
+    // Content Language
+    lang: text('lang'),
+
+    // Published time
+    publishedTime: text('publishedTime'),
 
     // Comma-separated tags/labels
     tags: text('tags'),
