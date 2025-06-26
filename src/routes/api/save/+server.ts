@@ -7,7 +7,7 @@ import { unfurl } from '$lib/server/helpers/unfurl'
 
 // Type Definitions
 import type { saves } from '$lib/server/database/schema/saves'
-import { validItemTypes } from '$lib/server/types'
+import { validItemTypes } from '$lib/server/database/schema/saves'
 
 export const POST: RequestHandler = async ({ request }) => {
     const { url, title, type, content, tags } = await request.json() as typeof saves.$inferInsert

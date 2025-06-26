@@ -1,12 +1,11 @@
 // Library
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
-// Type Definitions
-import { validItemTypes } from '../../types'
-
 // -----------
 // SAVE SCHEMA
 // -----------
+
+export const validItemTypes = ['article', 'video', 'audio', 'image', 'pdf', 'bookmark', 'generic'] as const
 
 export const saves = sqliteTable('saves', {
 
