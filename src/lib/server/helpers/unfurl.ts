@@ -65,6 +65,8 @@ export async function unfurl(url: string): Promise<URLMetadata> {
         dom.document.title ||
         url
 
+    // TODO: Sanitize the content and use CSP. See https://github.com/mozilla/readability?tab=readme-ov-file#security
+
     const content = readability?.content ?? undefined
     const textContent = readability?.textContent ?? dom.document.body?.textContent ?? undefined
     const length = readability?.length ?? textContent?.length ?? 0
@@ -97,9 +99,6 @@ export async function unfurl(url: string): Promise<URLMetadata> {
         dom.getMeta('twitter:image') ||
         undefined
 
-
-    // TODO: Sanitize the content and use CSP. See https://github.com/mozilla/readability?tab=readme-ov-file#security
-
     // Determine the content type
     //? Again, maybe content-type or mime-type would be a better indicator?
     const ogType = dom.getMeta('og:type') ?? dom.getMeta('medium') ?? ''
@@ -126,6 +125,11 @@ export async function unfurl(url: string): Promise<URLMetadata> {
     }
 }
 
+// -------
+// HELPERS
+// -------
+
+/** Extends the JSDOM class with some helpers */
 class DOM extends JSDOM {
     constructor(html: string, url: string) {
         super(html, { url })
@@ -135,8 +139,9 @@ class DOM extends JSDOM {
         return this.window.document
     }
 
-    getMeta(prop: string) {
-        return this.window.document.querySelector(`meta[property="${prop}"]`)?.getAttribute('content') ??
-            this.window.document.querySelector(`meta[name="${prop}"]`)?.getAttribute('content')
+    /** @return The content value of the given property's meta tag */
+    getMeta(property: string) {
+        return this.window.document.querySelector(`meta[property="${property}"]`)?.getAttribute('content') ??
+            this.window.document.querySelector(`meta[name="${property}"]`)?.getAttribute('content')
     }
 }
