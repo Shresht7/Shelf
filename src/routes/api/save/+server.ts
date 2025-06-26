@@ -6,11 +6,11 @@ import { json, type RequestHandler } from '@sveltejs/kit'
 import { unfurl } from '$lib/server/helpers/unfurl'
 
 // Type Definitions
-import type { item } from '$lib/server/database/schema/item'
+import type { saves } from '$lib/server/database/schema/saves'
 import { validItemTypes } from '$lib/server/types'
 
 export const POST: RequestHandler = async ({ request }) => {
-    const { url, title, type, content, tags } = await request.json() as typeof item.$inferInsert
+    const { url, title, type, content, tags } = await request.json() as typeof saves.$inferInsert
 
     if (!url || !title || !type) {
         return new Response('Missing required fields', { status: 400 })

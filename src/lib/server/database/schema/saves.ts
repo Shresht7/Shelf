@@ -5,10 +5,10 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { validItemTypes } from '../../types'
 
 // -----------
-// ITEM SCHEMA
+// SAVE SCHEMA
 // -----------
 
-export const item = sqliteTable('item', {
+export const saves = sqliteTable('saves', {
 
     // Unique identifier for the item
     id: integer('id').primaryKey({ autoIncrement: true }),
