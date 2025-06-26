@@ -6,11 +6,38 @@ import { isProbablyReaderable, Readability } from '@mozilla/readability'
 import type { ItemType } from '../../server/database/schema/saves'
 
 type URLMetadata = {
+    /** Title of the article */
     title: string,
-    content?: string,
+    /** The type of the article */
     type: ItemType,
+    /** HTML string of the processed article content */
+    content?: string,
+    /** Text Content of the article, with all the HTML tags removed */
+    textContent?: string,
+    /** Length of an article, in characters */
+    length?: number,
+    /** Article description, or short excerpt from the content */
+    excerpt?: string,
+    /** Author metadata */
+    byline?: string,
+    /** Content direction */
+    dir?: string,
+    /** Name of the site */
+    siteName?: string,
+    /** Content language */
+    lang?: string,
+    /** Published time */
+    publishedTime?: string,
+    /** Thumbnail image */
+    image?: string,
 }
 
+/**
+ * Unfurls the URL and extracts all the relevant metadata
+ * @param url The URL of the resource to parse
+ * @returns The parsed and extracted metadata from the URL resource
+ * @throws If the fetch response is not ok
+ */
 export async function unfurl(url: string): Promise<URLMetadata> {
     // Fetch the URL resource
     const response = await fetch(url)
@@ -32,12 +59,45 @@ export async function unfurl(url: string): Promise<URLMetadata> {
     }
 
     // Extract metadata like title and social image from open-graph tags / html
-    const title = readability?.title || dom.getMeta('og:title') || dom.document.title || url
-    const image = dom.getMeta('og:image') ?? dom.getMeta('twitter:image')
-    const content = readability?.content || dom.document?.textContent || undefined
+    const title =
+        readability?.title ||
+        dom.getMeta('og:title') ||
+        dom.document.title ||
+        url
 
-    // TODO: Readability returns quite a bit of information like lang, textContent, length, excerpt, siteName, publishedTime. Use them. See See https://github.com/mozilla/readability?tab=readme-ov-file#parse
     // TODO: Sanitize the content and use CSP. See https://github.com/mozilla/readability?tab=readme-ov-file#security
+
+    const content = readability?.content ?? undefined
+    const textContent = readability?.textContent ?? dom.document.body?.textContent ?? undefined
+    const length = readability?.length ?? textContent?.length ?? 0
+    const excerpt =
+        readability?.excerpt ||
+        dom.getMeta('description') ||
+        dom.getMeta('og:description') ||
+        undefined
+    const byline =
+        readability?.byline ||
+        dom.getMeta('author') ||
+        dom.getMeta('article:author') ||
+        undefined
+    const dir = readability?.dir ?? undefined
+    const siteName =
+        readability?.siteName ||
+        dom.getMeta('og:site_name') ||
+        dom.document.location.hostname
+    const lang =
+        readability?.lang ||
+        dom.document.documentElement.lang ||
+        undefined
+    const publishedTime =
+        readability?.publishedTime ||
+        dom.getMeta('article:published_time') ||
+        dom.getMeta('og:published_time') ||
+        undefined
+    const image =
+        dom.getMeta('og:image') ||
+        dom.getMeta('twitter:image') ||
+        undefined
 
     // Determine the content type
     //? Again, maybe content-type or mime-type would be a better indicator?
@@ -51,11 +111,25 @@ export async function unfurl(url: string): Promise<URLMetadata> {
 
     return {
         title,
+        type,
         content,
-        type
+        textContent,
+        length,
+        excerpt,
+        byline,
+        dir,
+        siteName,
+        lang,
+        publishedTime,
+        image,
     }
 }
 
+// -------
+// HELPERS
+// -------
+
+/** Extends the JSDOM class with some helpers */
 class DOM extends JSDOM {
     constructor(html: string, url: string) {
         super(html, { url })
@@ -65,8 +139,9 @@ class DOM extends JSDOM {
         return this.window.document
     }
 
-    getMeta(prop: string) {
-        return this.window.document.querySelector(`meta[property="${prop}"]`)?.getAttribute('content') ??
-            this.window.document.querySelector(`meta[name="${prop}"]`)?.getAttribute('content')
+    /** @return The content value of the given property's meta tag */
+    getMeta(property: string) {
+        return this.window.document.querySelector(`meta[property="${property}"]`)?.getAttribute('content') ??
+            this.window.document.querySelector(`meta[name="${property}"]`)?.getAttribute('content')
     }
 }
