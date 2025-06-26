@@ -1,5 +1,5 @@
 // Library
-import { getAllItems } from '$lib/server/database/item'
+import { getAllItems } from '$lib/server/database/saves'
 import { json, type RequestHandler } from '@sveltejs/kit'
 
 export const GET: RequestHandler = async ({ request }) => {
