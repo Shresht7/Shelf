@@ -1,11 +1,19 @@
 // Library
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { z } from 'zod'
+
+// --------------
+// SAVE ITEM TYPE
+// --------------
+
+const validItemTypes = ['article', 'video', 'audio', 'image', 'pdf', 'bookmark', 'generic'] as const
+
+export const ItemTypeSchema = z.enum(validItemTypes)
+export type ItemType = z.infer<typeof ItemTypeSchema>
 
 // -----------
 // SAVE SCHEMA
 // -----------
-
-export const validItemTypes = ['article', 'video', 'audio', 'image', 'pdf', 'bookmark', 'generic'] as const
 
 export const saves = sqliteTable('saves', {
 

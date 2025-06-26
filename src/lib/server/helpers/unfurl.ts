@@ -3,7 +3,7 @@ import { JSDOM } from 'jsdom'
 import { isProbablyReaderable, Readability } from '@mozilla/readability'
 
 // Type Definitions
-import type { ItemType } from '../types'
+import type { ItemType } from '../../server/database/schema/saves'
 
 type URLMetadata = {
     title: string,
