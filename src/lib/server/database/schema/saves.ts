@@ -1,5 +1,6 @@
 // Library
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'drizzle-zod'
 import { z } from 'zod'
 
 // --------------
@@ -39,3 +40,9 @@ export const saves = sqliteTable('saves', {
     createdAt: integer('createdAt', { mode: 'timestamp' }).notNull()
 
 });
+
+export const savesSchema = {
+    SELECT: createSelectSchema(saves),
+    INSERT: createInsertSchema(saves),
+    UPDATE: createUpdateSchema(saves),
+}
