@@ -1,6 +1,6 @@
 // Database
 import { db } from '.'
-import { save } from './schema/saves'
+import { saves } from './schema/saves'
 import { eq } from 'drizzle-orm'
 
 /**
@@ -8,8 +8,8 @@ import { eq } from 'drizzle-orm'
  * @param i The item to save to the database
  * @returns The id of the saved item
  */
-export async function saveItem(i: typeof save.$inferInsert) {
-    return db.insert(save)
+export async function saveItem(i: typeof saves.$inferInsert) {
+    return db.insert(saves)
         .values(i)
         .returning()
 }
@@ -19,7 +19,7 @@ export async function saveItem(i: typeof save.$inferInsert) {
  * @returns All items from the database
  */
 export async function getAllItems() {
-    return db.select().from(save).all()
+    return db.select().from(saves).all()
 }
 
 /**
@@ -28,7 +28,7 @@ export async function getAllItems() {
  * @returns The corresponding item
  */
 export async function getItemById(id: number) {
-    return db.select().from(save)
-        .where(eq(save.id, id))
+    return db.select().from(saves)
+        .where(eq(saves.id, id))
         .get()
 }
