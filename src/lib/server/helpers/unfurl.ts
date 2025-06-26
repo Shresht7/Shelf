@@ -32,6 +32,12 @@ type URLMetadata = {
     image?: string,
 }
 
+/**
+ * Unfurls the URL and extracts all the relevant metadata
+ * @param url The URL of the resource to parse
+ * @returns The parsed and extracted metadata from the URL resource
+ * @throws If the fetch response is not ok
+ */
 export async function unfurl(url: string): Promise<URLMetadata> {
     // Fetch the URL resource
     const response = await fetch(url)
@@ -53,11 +59,45 @@ export async function unfurl(url: string): Promise<URLMetadata> {
     }
 
     // Extract metadata like title and social image from open-graph tags / html
-    const title = readability?.title || dom.getMeta('og:title') || dom.document.title || url
-    const image = dom.getMeta('og:image') ?? dom.getMeta('twitter:image')
-    const content = readability?.content || dom.document?.textContent || undefined
+    const title =
+        readability?.title ||
+        dom.getMeta('og:title') ||
+        dom.document.title ||
+        url
 
-    // TODO: Readability returns quite a bit of information like lang, textContent, length, excerpt, siteName, publishedTime. Use them. See See https://github.com/mozilla/readability?tab=readme-ov-file#parse
+    const content = readability?.content ?? undefined
+    const textContent = readability?.textContent ?? dom.document.body?.textContent ?? undefined
+    const length = readability?.length ?? textContent?.length ?? 0
+    const excerpt =
+        readability?.excerpt ||
+        dom.getMeta('description') ||
+        dom.getMeta('og:description') ||
+        undefined
+    const byline =
+        readability?.byline ||
+        dom.getMeta('author') ||
+        dom.getMeta('article:author') ||
+        undefined
+    const dir = readability?.dir ?? undefined
+    const siteName =
+        readability?.siteName ||
+        dom.getMeta('og:site_name') ||
+        dom.document.location.hostname
+    const lang =
+        readability?.lang ||
+        dom.document.documentElement.lang ||
+        undefined
+    const publishedTime =
+        readability?.publishedTime ||
+        dom.getMeta('article:published_time') ||
+        dom.getMeta('og:published_time') ||
+        undefined
+    const image =
+        dom.getMeta('og:image') ||
+        dom.getMeta('twitter:image') ||
+        undefined
+
+
     // TODO: Sanitize the content and use CSP. See https://github.com/mozilla/readability?tab=readme-ov-file#security
 
     // Determine the content type
@@ -72,8 +112,17 @@ export async function unfurl(url: string): Promise<URLMetadata> {
 
     return {
         title,
+        type,
         content,
-        type
+        textContent,
+        length,
+        excerpt,
+        byline,
+        dir,
+        siteName,
+        lang,
+        publishedTime,
+        image,
     }
 }
 
