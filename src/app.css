@@ -1,3 +1,13 @@
+/* CSS VARIABLES */
+/* ------------- */
+
+:root {
+    --max-width: 960px;
+}
+
+/* NORMALIZE */
+/* --------- */
+
 *,
 *::before,
 *::after {
@@ -8,6 +18,51 @@
 
 html,
 body {
-    max-width: 960px;
+    height: 100%;
+    line-height: 1.5;
+}
+
+html:focus-within {
+    scroll-behavior: smooth;
+
+    @media (prefers-reduced-motion: reduce) {
+        scroll-behavior: smooth;
+    }
+}
+
+img,
+picture,
+svg {
+    max-width: 100%;
+    display: block;
+}
+
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* PREFERENCES */
+/* ----------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01s !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* UTILITY CLASSES */
+/* --------------- */
+
+.container {
+    max-width: var(--max-width, none);
     margin: 0 auto;
 }
