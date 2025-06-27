@@ -34,7 +34,9 @@ img,
 picture,
 svg {
     max-width: 100%;
-    display: block;
+    height: 100%;
+    vertical-align: middle;
+    font-style: italic;
 }
 
 input,
